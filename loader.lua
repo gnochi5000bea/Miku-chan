@@ -1,19 +1,18 @@
 local REPO = "https://raw.githubusercontent.com/gnochi5000bea/Miku-chan/refs/heads/main/games/"
 local SCRIPTS = {
     [18794863104] = "Demonology",
-    [134282808814904] = "hunting game",
     [1.342828088149e+14] = "hunting game"
 }
 
 local place_id = game.PlaceID
-local script_url = SCRIPTS[place_id]
+local script_name = SCRIPTS[place_id]
 
-if (not script_url) then
+if (not script_name) then
     print("No script found for place id: " .. tostring(place_id))
     return
 end
 
-script_url = REPO .. script_url .. ".lua"
+local script_url = REPO .. script_name .. ".lua"
 
 http.Get(script_url, {}, function(response)
     if (not response) then
@@ -21,6 +20,6 @@ http.Get(script_url, {}, function(response)
         return
     end
 
-    print("Loading script, " .. SCRIPTS[place_id])
-    cheat.LoadString(response, "loaded_script_" .. SCRIPTS[place_id])
+    print("Loading script: " .. script_name)
+    cheat.LoadString(response, script_name)
 end)
