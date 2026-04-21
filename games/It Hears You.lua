@@ -245,29 +245,31 @@ local function on_update()
         local monster = REGISTERED_MONSTER.instance
         local monster_hrp = monster:find_first_child("HumanoidRootPart")
 
-        if (client_hrp and show_distance and distance_enabled) then
-            REGISTERED_MONSTER.distance = magnitude(client_hrp.Position, monster_hrp.Position)
-        end
-
-        if (chasing_enabled or target_enabled) then
-            local is_chasing = monster:find_first_child("Chasing") and monster:find_first_child("Chasing").Value
-            local has_target = monster:find_first_child("Target") and monster:find_first_child("Target").Value
-
-            if (is_chasing == 1) then
-                REGISTERED_MONSTER.chasing = true
-            else
-                REGISTERED_MONSTER.chasing = false
+        if (monster_hrp) then
+            if (client_hrp and show_distance and distance_enabled) then
+                REGISTERED_MONSTER.distance = magnitude(client_hrp.Position, monster_hrp.Position)
             end
 
-            if (has_target) then
-                REGISTERED_MONSTER.target = has_target.Name
-            else
-                REGISTERED_MONSTER.target = nil
-            end
-        end
+            if (chasing_enabled or target_enabled) then
+                local is_chasing = monster:find_first_child("Chasing") and monster:find_first_child("Chasing").Value
+                local has_target = monster:find_first_child("Target") and monster:find_first_child("Target").Value
 
-        local x, y, on_screen = utility.world_to_screen(monster_hrp.Position)
-        REGISTERED_MONSTER.instance_data = { x = x, y = y, on_screen = on_screen }
+                if (is_chasing == 1) then
+                    REGISTERED_MONSTER.chasing = true
+                else
+                    REGISTERED_MONSTER.chasing = false
+                end
+
+                if (has_target) then
+                    REGISTERED_MONSTER.target = has_target.Name
+                else
+                    REGISTERED_MONSTER.target = nil
+                end
+            end
+
+            local x, y, on_screen = utility.world_to_screen(monster_hrp.Position)
+            REGISTERED_MONSTER.instance_data = { x = x, y = y, on_screen = on_screen }
+        end
     else
         REGISTERED_MONSTER.alive = false
     end
