@@ -71,6 +71,8 @@ ui.newCheckbox("MIKU", "Monster ESP", "Enabled")
 ui.newColorpicker("MIKU", "Monster ESP", "Monster Color", {r=255, g=0, b=0}, true)
 ui.newCheckbox("MIKU", "Monster ESP", "Show distance")
 ui.newMultiselect("MIKU", "Monster ESP", "Flags", MONSTER_FLAGS)
+ui.newColorpicker("MIKU", "Monster ESP", "Chasing Color", {r=255, g=100, b=100}, true)
+ui.newColorpicker("MIKU", "Monster ESP", "Target Color", {r=255, g=100, b=100}, true)
 
 ui.newContainer("MIKU", "SETTINGS", "Settings", { autosize = true })
 local FONTS = { "ConsolasBold", "SmallestPixel", "Verdana", "Tahoma" }
@@ -109,13 +111,16 @@ local function register_nodes(folder, registry, label, distance_enabled)
                 end
 
                 local node_root = node_instance:find_first_child("BillboardAnchor")
-                local x, y, on_screen = utility.world_to_screen(node_root.Position)
-                registered_node.instance_data = { x = x, y = y, on_screen = on_screen }
 
-                local client_hrp = get_client_hrp()
+                if (node_root) then
+                    local x, y, on_screen = utility.world_to_screen(node_root.Position)
+                    registered_node.instance_data = { x = x, y = y, on_screen = on_screen }
 
-                if (client_hrp and distance_enabled) then
-                    registered_node.distance = magnitude(client_hrp.Position, node_root.Position)
+                    local client_hrp = get_client_hrp()
+
+                    if (client_hrp and distance_enabled) then
+                        registered_node.distance = magnitude(client_hrp.Position, node_root.Position)
+                    end
                 end
             else
                 if (not registered_node) then
@@ -203,11 +208,14 @@ local function on_update()
             end
 
             local item_root = item_instance.Name == "ToolDrop" and item_instance:find_first_child("Visual") or item_instance:find_first_child("BillboardAnchor")
-            local x, y, on_screen = utility.world_to_screen(item_root.Position)
-            registered_item.instance_data = { x = x, y = y, on_screen = on_screen }
 
-            if (client_hrp and distance_enabled) then
-                registered_item.distance = magnitude(client_hrp.Position, item_root.Position)
+            if (item_root) then
+                local x, y, on_screen = utility.world_to_screen(item_root.Position)
+                registered_item.instance_data = { x = x, y = y, on_screen = on_screen }
+
+                if (client_hrp and distance_enabled) then
+                    registered_item.distance = magnitude(client_hrp.Position, item_root.Position)
+                end
             end
         end
     end
@@ -224,12 +232,8 @@ local function on_update()
     register_nodes(metal_folder, REGISTERED_METAL, "Metal", distance_enabled)
     register_nodes(gunpowder_folder, REGISTERED_GUNPOWDER, "Gunpowder", distance_enabled)
 
-    if (REGISTERED_MONSTER.instance == nil) then
-        REGISTERED_MONSTER.alive = false
+    if (workspace:find_first_child("Pathfinding Monster")) then
         REGISTERED_MONSTER.instance = workspace:find_first_child("Pathfinding Monster")
-    end
-
-    if (REGISTERED_MONSTER.instance ~= nil) then
         REGISTERED_MONSTER.alive = true
 
         local show_distance = ui.getValue("MIKU", "Monster ESP", "Show distance")
@@ -264,6 +268,8 @@ local function on_update()
 
         local x, y, on_screen = utility.world_to_screen(monster_hrp.Position)
         REGISTERED_MONSTER.instance_data = { x = x, y = y, on_screen = on_screen }
+    else
+        REGISTERED_MONSTER.alive = false
     end
 end
 
@@ -333,10 +339,12 @@ local function on_paint()
     end
 
     if (monster_enabled and REGISTERED_MONSTER.alive) then
-        local font = FONTS[ui.getValue("MIKU", "SETTINGS", "Font") + 1]
         local instance_data = REGISTERED_MONSTER.instance_data
 
         if (instance_data.on_screen) then
+            local monster_color = ui.getValue("MIKU", "Monster ESP", "Monster Color")
+            local font = FONTS[ui.getValue("MIKU", "SETTINGS", "Font") + 1]
+
             local chasing_enabled = flags[table_find(MONSTER_FLAGS, "Chasing")]
             local target_enabled = flags[table_find(MONSTER_FLAGS, "Target")]
 
@@ -346,17 +354,21 @@ local function on_paint()
                 monster_name = monster_name .. " [" .. tostring(floor(REGISTERED_MONSTER.distance)) .. "m]"
             end
 
-            draw.TextOutlined(monster_name, instance_data.x, instance_data.y, ui.getValue("MIKU", "Monster ESP", "Monster Color"), font)
+            draw.TextOutlined(monster_name, instance_data.x, instance_data.y, Color3.fromRGB(monster_color.r, monster_color.g, monster_color.b), font)
 
             local line = 1
 
             if (chasing_enabled and REGISTERED_MONSTER.chasing == true) then
-                draw.TextOutlined("Chasing", instance_data.x, instance_data.y + (line * 15), Color3.fromRGB(255, 100, 100), font)
+                local chasing_color = ui.getValue("MIKU", "Monster ESP", "Chasing Color")
+
+                draw.TextOutlined("Chasing", instance_data.x, instance_data.y + (line * 15), Color3.fromRGB(chasing_color.r, chasing_color.g, chasing_color.b), font)
                 line = line + 1
             end
 
             if (target_enabled and REGISTERED_MONSTER.chasing == true and REGISTERED_MONSTER.target ~= nil) then
-                draw.TextOutlined("-> " .. REGISTERED_MONSTER.target, instance_data.x, instance_data.y + (line * 15), Color3.fromRGB(255, 100, 100), font)
+                local target_color = ui.getValue("MIKU", "Monster ESP", "Target Color")
+
+                draw.TextOutlined("-> " .. REGISTERED_MONSTER.target, instance_data.x, instance_data.y + (line * 15), Color3.fromRGB(target_color.r, target_color.g, target_color.b), font)
                 line = line + 1
             end
         end
