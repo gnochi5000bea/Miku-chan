@@ -8,7 +8,7 @@ local SCRIPTS = {
 local place_id = game.PlaceID
 local script_url = SCRIPTS[place_id]
 
-if not script_url then
+if (not script_url) then
     return
 end
 
@@ -16,6 +16,7 @@ script_url = REPO .. script_url .. ".lua"
 
 http.Get(script_url, {}, function(response)
     if not response then
+        print("Request failed, no response received.")
         return
     end
 
