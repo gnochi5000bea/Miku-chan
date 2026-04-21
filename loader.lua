@@ -1,7 +1,8 @@
 local REPO = "https://raw.githubusercontent.com/gnochi5000bea/Miku-chan/refs/heads/main/games/"
 local SCRIPTS = {
     [18794863104] = "Demonology",
-    [134282808814904] = "hunting game"
+    [134282808814904] = "hunting game",
+    [1.342828088149e+14] = "hunting game"
 }
 
 local place_id = game.PlaceID
