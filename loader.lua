@@ -15,7 +15,7 @@ end
 script_url = REPO .. script_url .. ".lua"
 
 http.Get(script_url, {}, function(response)
-    if not response then
+    if (not response) then
         print("Request failed, no response received.")
         return
     end
