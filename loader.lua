@@ -17,5 +17,5 @@ http.Get(script_url, {}, function(response)
         return
     end
 
-    cheat.LoadString(response, "loaded_script_" .. tostring(place_id))
+    cheat.LoadString(response, "loaded_script_" .. SCRIPTS[place_id])
 end)
