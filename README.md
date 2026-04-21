@@ -5,4 +5,4 @@ http.Get("https://raw.githubusercontent.com/gnochi5000bea/Miku-chan/refs/heads/m
     end
 
     cheat.LoadString(response, "Miku-chan")
-end)```
+end)
