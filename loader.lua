@@ -23,5 +23,5 @@ http.Get(script_url, {}, function(response)
     end
 
     print("Loading script: " .. script_name)
-    cheat.LoadString(response, script_name)
+    loadstring(response)()
 end)
