@@ -1,16 +1,16 @@
 local REPO = "https://raw.githubusercontent.com/gnochi5000bea/Miku-chan/refs/heads/main/games/"
 local SCRIPTS = {
-    [18794863104] = "Demonology",
-    [1.342828088149e+14] = "hunting game",
-    [18680867089] = "Ultimate Mining Tycoon",
-    [1.2401231600025e+14] = "It Hears You"
+    ["18794863104"] = "Demonology",
+    ["1.342828088149e+14"] = "hunting game",
+    ["18680867089"] = "Ultimate Mining Tycoon",
+    ["1.2401231600025e+14"] = "It Hears You"
 }
 
-local place_id = game.PlaceID
+local place_id = tostring(game.PlaceID)
 local script_name = SCRIPTS[place_id]
 
 if (not script_name) then
-    print("No script found for place id: " .. tostring(place_id))
+    print("No script found for place id: " .. wwwwwplace_id)
     return
 end
 
