@@ -10,7 +10,7 @@ local place_id = tostring(game.PlaceID)
 local script_name = SCRIPTS[place_id]
 
 if (not script_name) then
-    print("No script found for place id: " .. wwwwwplace_id)
+    print("No script found for place id: " .. place_id)
     return
 end
 
